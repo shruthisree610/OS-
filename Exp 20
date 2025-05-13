@@ -1,0 +1,64 @@
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_USERS 10
+#define MAX_FILES 10
+
+typedef struct {
+    char files[MAX_FILES][30];
+    int fileCount;
+} UserDirectory;
+
+UserDirectory masterDirectory[MAX_USERS];
+char users[MAX_USERS][30];
+int userCount = 0;
+
+void createUser(char *user) {
+    strcpy(users[userCount], user);
+    masterDirectory[userCount++].fileCount = 0;
+    printf("User '%s' created.\n", user);
+}
+
+void createFile(char *user, char *file) {
+    for (int i = 0; i < userCount; i++) {
+        if (strcmp(users[i], user) == 0) {
+            strcpy(masterDirectory[i].files[masterDirectory[i].fileCount++], file);
+            printf("File '%s' added to '%s'.\n", file, user);
+            return;
+        }
+    }
+    printf("User not found.\n");
+}
+
+void displayStructure() {
+    for (int i = 0; i < userCount; i++) {
+        printf("%s:\n", users[i]);
+        for (int j = 0; j < masterDirectory[i].fileCount; j++)
+            printf("  - %s\n", masterDirectory[i].files[j]);
+    }
+}
+
+int main() {
+    int choice;
+    char user[30], file[30];
+
+    while (1) {
+        printf("\n1. Create User\n2. Create File\n3. Display\n4. Exit\nChoice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            printf("Enter User: ");
+            scanf("%s", user);
+            createUser(user);
+        } else if (choice == 2) {
+            printf("Enter User and File: ");
+            scanf("%s %s", user, file);
+            createFile(user, file);
+        } else if (choice == 3) {
+            displayStructure();
+        } else if (choice == 4) break;
+        else printf("Invalid choice.\n");
+    }
+    return 0;
+}
